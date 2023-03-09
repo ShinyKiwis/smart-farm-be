@@ -1,9 +1,9 @@
-import {cleanEnv, port} from "envalid"
+import { cleanEnv, port } from 'envalid';
 
 const validateEnv = () => {
   cleanEnv(process.env, {
-    PORT: port()
-  })
-}
+    PORT: port(),
+  });
+};
 
-export default validateEnv
+export default validateEnv;

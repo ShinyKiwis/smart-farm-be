@@ -5,7 +5,13 @@
     "sourceMap": true,
     "target": "es2017",
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "app": ["./src/app"],
+      "database/*": ["./database/*"],
+      "utils/*": ["./src/utils/*"],
+      "interfaces/*": ["./src/interfaces/*"],
+    }
   },
   "include": [
     "src/**/*.ts"
