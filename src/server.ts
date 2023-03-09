@@ -1,7 +1,7 @@
 import App from 'app';
 import * as dotenv from 'dotenv';
 import validateEnv from 'utils/validateEnv';
-import UserController from './users/user.controller';
+import UserController from './controllers/users/user.controller';
 
 dotenv.config();
 validateEnv();

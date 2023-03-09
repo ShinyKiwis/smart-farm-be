@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import User from 'src/users/user.interface';
-import UserModel from '../users/user.model';
+import User from 'src/controllers/users/user.interface';
+import UserModel from '../controllers/users/user.model';
 
 interface Models {
   User: mongoose.Model<User & mongoose.Document>;
