@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
+import User from "src/users/user.interface";
 import UserModel from "../users/user.model"
 
 interface Models {
-  User: typeof UserModel;
+  User: mongoose.Model<User & mongoose.Document>;
 }
 
 class Database {
@@ -13,7 +14,7 @@ class Database {
     // Initialize mongo
     mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}${process.env.MONGO_ENDPOINT}`)
     this._models = {
-      User: new UserModel()
+      User: UserModel
     }
   }
 
@@ -23,6 +24,7 @@ class Database {
     }
     return this._instance;
   }
+
 }
 
 export default Database;
