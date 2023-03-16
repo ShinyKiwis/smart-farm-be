@@ -16,7 +16,12 @@ class AdafruitController implements Controller {
     private initializeRoute () {
         this.router.get(`${this.path}/:feedKey`, this.getFeedData);
         this.router.post(`${this.path}/:feedKey/:data`, this.updateFeedData);
+        this.router.post(`${this.path}/`, this.getDataFromAdafruit)
         this.router.get(`${this.path}/:feedKey/latest`, this.getLatestData);
+    }
+
+    private getDataFromAdafruit = (request: express.Request, response: express.Response) => {
+      this.observer.notify(JSON.stringify(request.body[0]))
     }
 
     private getFeedData = (request: express.Request, response: express.Response) => {

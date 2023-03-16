@@ -9,7 +9,6 @@ class Observer {
 
   notify = (data: string) => {
     this.observers.forEach(observer => {
-      console.log(data)
       observer.send(data)
     })
   }

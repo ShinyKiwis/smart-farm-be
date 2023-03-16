@@ -36,9 +36,9 @@ class UserController implements Controller {
       .then(async (user) => {
         const passwordMatched = await bcrypt.compare(password, user.password)
         if(user.username == username && passwordMatched) {
-          response.send(user)
+          response.send(JSON.stringify({status: true}))
         }else {
-          response.send("Invalid credentials")
+          response.send(JSON.stringify({status: false}))
         }
       })
   };
