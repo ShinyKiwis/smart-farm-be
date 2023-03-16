@@ -5,7 +5,7 @@ import * as cors from 'cors'
 import Controller from 'interfaces/controller.interface';
 import Database from './database';
 import Client from './client';
-import WebSocket, { WebSocketServer } from 'ws';
+import * as WebSocket from 'ws';
 
 class App {
   private app: express.Application;
@@ -31,18 +31,23 @@ class App {
 
   private initializeWebSocket = () => {
     this.httpServer = http.createServer(this.app)
-    this.ws = new WebSocketServer({server: this.httpServer})
+    const server = this.httpServer
+    this.ws = new WebSocket.Server({server})
   }
 
   private initializeWebSocketEvents = () => {
     this.ws.on('connection', (connection) => {
+      console.log(this.clients.getClients().length)
       if (!this.clients.getClients().includes(connection)) {
         this.clients.addClient(connection)
-        connection.send('HEllO')
       }
       console.log('Received a new connection: ' + connection )
-      this.ws.on('message', (message) => {
+      connection.on('message', (message) => {
         console.log(`Received: ${message}`)
+      })
+
+      connection.on('close', ()=> {
+        this.clients.removeClient(connection)
       })
     })
   }

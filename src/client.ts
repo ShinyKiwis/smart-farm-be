@@ -18,8 +18,13 @@ class Client {
     return this.clients
   }
 
-  public addClient = (connection) => {
+  public addClient = (connection: WebSocket.WebSocket) => {
     this.clients.push(connection)
+  }
+
+  public removeClient = (connection: WebSocket.WebSocket) => {
+    const connectionIdx = this.clients.indexOf(connection)
+    this.clients.splice(connectionIdx, 1)
   }
 
 }

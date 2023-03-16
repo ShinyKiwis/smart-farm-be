@@ -5,7 +5,8 @@ const validateEnv = () => {
     PORT: port(),
     MONGO_USERNAME: str(),
     MONGO_PASSWORD: str(),
-    MONGO_ENDPOINT: str()
+    MONGO_ENDPOINT: str(),
+    ADAFRUIT_APIKEY: str()
   });
 };
 
