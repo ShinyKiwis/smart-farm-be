@@ -41,6 +41,9 @@ class UserController implements Controller {
           response.send(JSON.stringify({status: false}))
         }
       })
+      .catch(_ => {
+        response.send(JSON.stringify({error: "User not existed!"}))
+      })
   };
 
   private createUser = async (
