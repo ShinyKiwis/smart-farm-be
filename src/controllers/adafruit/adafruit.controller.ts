@@ -23,7 +23,7 @@ class AdafruitController implements Controller {
     private getDataFromAdafruit = (request: express.Request, response: express.Response) => {
       console.log(request.body[0])
       this.observer.notify(JSON.stringify(request.body[0]))
-      response.send("success")
+      // response.status(200).end()
     }
 
     private getFeedData = (request: express.Request, response: express.Response) => {
