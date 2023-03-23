@@ -7,6 +7,9 @@
     "dev": "nodemon",
     "format": "prettier --write \"src/**/*.ts\""
   },
+  "engines": {
+    "node": ">=14 <15"
+  },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
