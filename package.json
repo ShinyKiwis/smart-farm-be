@@ -1,10 +1,10 @@
 {
   "name": "smart-farm-be",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/server.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "nodemon main",
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {

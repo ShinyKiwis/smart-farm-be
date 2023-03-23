@@ -17,3 +17,15 @@
   - [] send event to frontend
   - [] save event to mongo
   
+farms
+happy_farm
+- happy_farm
+  - temperature
+  - moisture
+  - humidity
+  - GDD
+- mia_farm
+  - temperature
+  - moisture
+  - humidity
+  - GDD
