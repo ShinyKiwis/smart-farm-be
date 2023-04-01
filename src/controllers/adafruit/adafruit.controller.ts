@@ -26,16 +26,13 @@ class AdafruitController implements Controller {
 
     private pollForData = (feedKey: string) => {
       setInterval(async ()=>{
-        const {data} = await axios.get(`https://io.adafruit.com/api/v2/meodihere/feeds/${feedKey}/data/retain`, {
+        const {data} = await axios.get(`https://io.adafruit.com/api/v2/meodihere/feeds/${feedKey}/data/last`, {
             params: {
                 'x-aio-key': process.env.ADAFRUIT_APIKEY 
             },
         })
-        const result = {
-          [feedKey]: data.trim().replace(/,/g,"")
-        }
-        console.log(JSON.stringify(result))
-        this.observer.notify(JSON.stringify(result))
+        console.log({...data, feed_key: `${feedKey}`})
+        this.observer.notify(JSON.stringify({...data, feed_key: `${feedKey}`}))
       }, 32000)
     }
 
@@ -73,7 +70,7 @@ class AdafruitController implements Controller {
                 'x-aio-key': process.env.ADAFRUIT_APIKEY 
             },
         }).then((res) => {
-            response.send(res.data.trim().replace(/,/g,""))
+            response.send(res.data)
         }).catch(error => {
           console.log(error)
         })
