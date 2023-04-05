@@ -13,8 +13,8 @@ class AdafruitController implements Controller, Observer {
     this.initializeRoute();
   }
 
-  public update(data: any) {
-    console.log(data)
+  update(data: any) {
+    console.log(data);
     this.clients.forEach((client) => {
       client.send(data);
     });
