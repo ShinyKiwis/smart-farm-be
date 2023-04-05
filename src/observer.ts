@@ -1,17 +1,3 @@
-import Client from "./client";
-import WebSocket from "ws";
-
-class Observer {
-  private observers: WebSocket.WebSocket[]
-  constructor(clients: Client) {
-    this.observers = clients.getClients()
-  }
-
-  notify = (data: string) => {
-    this.observers.forEach(observer => {
-      observer.send(data)
-    })
-  }
+export interface Observer {
+  update(data: any): void;
 }
-
-export default Observer
