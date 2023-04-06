@@ -1,6 +1,5 @@
 import { Observer } from './observer';
 import axios from 'axios';
-import Controller from 'interfaces/controller.interface';
 
 interface Subject {
   attach(observer: Observer): void;

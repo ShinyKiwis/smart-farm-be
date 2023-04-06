@@ -14,7 +14,6 @@ class AdafruitController implements Controller, Observer {
   }
 
   update(data: any) {
-    console.log(data);
     this.clients.forEach((client) => {
       client.send(data);
     });
