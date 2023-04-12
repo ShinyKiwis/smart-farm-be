@@ -2,35 +2,32 @@ import Client from 'src/client';
 import Database from 'src/database';
 import { Observer } from 'src/observer';
 import { sendEmail } from 'utils/email';
-import Log from './log.interface';
 
 class Logger implements Observer {
   private log = Database.getInstance().Log;
   private clients = Client.getInstance().getClients();
-  private thresholds = {
-    temperature: {
-      min: 20,
-      max: 40,
-    },
-    moisture: {
-      min: 25,
-      max: 50,
-    },
-    humidity: {
-      min: 30,
-      max: 50,
-    },
-    gdd: {
-      min: 4,
-      max: 10,
-    },
+  private threshold = Database.getInstance().ThresHold;
+  private thresholds = {}
+
+  constructor() {
+    this.getAndUpdateThresHold()
+  }
+
+  public getAndUpdateThresHold = async () => {
+    const thresholds = await this.threshold.find()
+    thresholds.forEach(threshold => {
+      this.thresholds[threshold.feed_key] = {
+        min: threshold.min, 
+        max: threshold.max
+      }
+    })
+    console.log(this.thresholds)
   };
 
   update(data: any): void {
     // console.log('LOGGER');
     // console.log(data);
     const extractedData = data[0];
-    console.log(extractedData);
     const [isExceed, status] = this.checkThreshold(
       extractedData.feed_key,
       extractedData.value
@@ -44,19 +41,18 @@ class Logger implements Observer {
     if (isExceed) {
       type = '[WARNING]';
       this.sendLog('[WARNING]', message);
-      sendEmail(message)
+      sendEmail(message);
     } else {
       type = '[EVENT]';
       this.sendLog('[EVENT]', message);
     }
-    this.save(type, message, extractedData.feed_key)
+    this.save(type, message, extractedData.feed_key);
     data.pop();
   }
 
   // Check if data exceed threshold
   private checkThreshold(feedKey: string, value: number): [boolean, string] {
     let result: [boolean, string] = [false, 'normal'];
-    console.log(feedKey);
     if (this.thresholds[feedKey]) {
       if (
         value < this.thresholds[feedKey].min ||
@@ -104,7 +100,7 @@ class Logger implements Observer {
       feed_key: feed_key,
     };
     const savedData = new this.log(dataObject);
-    console.log(`Saved to database for ${feed_key} field`)
+    console.log(`Saved to database for ${feed_key} field`);
     savedData.save();
   }
 }

@@ -10,13 +10,14 @@ import RTData from './subject';
 dotenv.config();
 validateEnv();
 
-const observers = [new AdafruitController()];
+const LoggerObject = new Logger()
+const observers = [new AdafruitController(LoggerObject)];
 
-const app = new App([new UserController(), new LoggerController, ...observers]);
+const app = new App([new UserController(), new LoggerController(), ...observers]);
 const RTSubject = new RTData();
 observers.forEach((observer) => {
   RTSubject.attach(observer);
 });
-RTSubject.attach(new Logger())
+RTSubject.attach(LoggerObject)
 
 app.listen();

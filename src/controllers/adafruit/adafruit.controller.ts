@@ -3,14 +3,19 @@ import * as express from 'express';
 import axios from 'axios';
 import { Observer } from '../../observer';
 import Client from 'src/client';
+import Database from 'src/database';
+import Logger from 'src/logger';
 
 class AdafruitController implements Controller, Observer {
   public path = '/adafruit';
   public router = express.Router();
   private clients = Client.getInstance().getClients();
+  private ThresHold = Database.getInstance().ThresHold;
+  private Logger: Logger
 
-  constructor() {
+  constructor(Logger: Logger) {
     this.initializeRoute();
+    this.Logger = Logger
   }
 
   update(data: any) {
@@ -23,6 +28,7 @@ class AdafruitController implements Controller, Observer {
     this.router.get(`${this.path}/:feedKey`, this.getFeedData);
     this.router.post(`${this.path}/:feedKey/:data`, this.updateFeedData);
     this.router.get(`${this.path}/:feedKey/latest`, this.getLatestData);
+    this.router.post(`${this.path}/:feedKey/:min/:max`, this.updateThresHold);
   }
 
   private getFeedData = (
@@ -87,6 +93,32 @@ class AdafruitController implements Controller, Observer {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  private updateThresHold = async (
+    request: express.Request,
+    response: express.Response
+  ) => {
+    const { feedKey, min, max } = request.params;
+    const dataObject = {
+      feed_key: feedKey,
+      min: min,
+      max: max,
+    };
+    await this.ThresHold.findOneAndUpdate(
+      { feed_key: dataObject.feed_key },
+      {
+        min: dataObject.min,
+        max: dataObject.max,
+      },
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      }
+    );
+    await this.Logger.getAndUpdateThresHold()
+    response.send('success');
   };
 }
 export default AdafruitController;

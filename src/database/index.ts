@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import ThresHold from 'src/controllers/adafruit/threshold.interface';
+import ThresHoldModel from 'src/controllers/adafruit/threshold.model';
 import User from 'src/controllers/users/user.interface';
 import Log from 'src/logger/log.interface';
 import LogModel from 'src/logger/log.model';
@@ -7,6 +9,7 @@ import UserModel from '../controllers/users/user.model';
 interface Models {
   User: mongoose.Model<User & mongoose.Document>;
   Log: mongoose.Model<Log & mongoose.Document>;
+  ThresHold: mongoose.Model<ThresHold & mongoose.Document>;
 }
 
 class Database {
@@ -24,6 +27,7 @@ class Database {
     this._models = {
       User: UserModel,
       Log: LogModel,
+      ThresHold: ThresHoldModel,
     };
   }
 
