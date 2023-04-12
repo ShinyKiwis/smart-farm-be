@@ -1,9 +1,8 @@
 interface Log {
-  id: string;
   time: Date;
   type: string;
   content: string;
-  feed_id: string;
+  feed_key: string;
 }
 
 export default Log;

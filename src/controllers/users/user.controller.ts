@@ -51,7 +51,7 @@ class UserController implements Controller {
     response: express.Response
   ) => {
     let userData: User = request.body;
-    const existed = this.user.findOne({ username: userData.username });
+    const existed = await this.user.findOne({ username: userData.username });
     if (!existed) {
       bcrypt.hash(userData.password, 10, (err, result) => {
         userData = { ...userData, password: result };

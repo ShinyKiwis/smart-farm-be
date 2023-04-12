@@ -1,6 +1,8 @@
 import Client from 'src/client';
 import Database from 'src/database';
 import { Observer } from 'src/observer';
+import { sendEmail } from 'utils/email';
+import Log from './log.interface';
 
 class Logger implements Observer {
   private log = Database.getInstance().Log;
@@ -28,29 +30,26 @@ class Logger implements Observer {
     // console.log('LOGGER');
     // console.log(data);
     const extractedData = data[0];
+    console.log(extractedData);
     const [isExceed, status] = this.checkThreshold(
       extractedData.feed_key,
       extractedData.value
     );
+    const message = this.genMessageTemplate(
+      extractedData.feed_key,
+      extractedData.value,
+      status
+    );
+    let type = undefined;
     if (isExceed) {
-      this.sendLog(
-        '[WARNING]',
-        this.genMessageTemplate(
-          extractedData.feed_key,
-          extractedData.value,
-          status
-        )
-      );
+      type = '[WARNING]';
+      this.sendLog('[WARNING]', message);
+      sendEmail(message)
     } else {
-      this.sendLog(
-        '[EVENT]',
-        this.genMessageTemplate(
-          extractedData.feed_key,
-          extractedData.value,
-          status
-        )
-      );
+      type = '[EVENT]';
+      this.sendLog('[EVENT]', message);
     }
+    this.save(type, message, extractedData.feed_key)
     data.pop();
   }
 
@@ -88,6 +87,7 @@ class Logger implements Observer {
     const responseMessage = {
       type: type,
       message: message,
+      created_at: new Date(),
     };
     console.log('SEND LOG: ', JSON.stringify(responseMessage));
     this.clients.forEach((client) => {
@@ -96,7 +96,17 @@ class Logger implements Observer {
   }
 
   // Save to MongoDB
-  private save(): void {}
+  private save(type: string, message: string, feed_key: string): void {
+    const dataObject = {
+      time: new Date(),
+      type: type,
+      content: message,
+      feed_key: feed_key,
+    };
+    const savedData = new this.log(dataObject);
+    console.log(`Saved to database for ${feed_key} field`)
+    savedData.save();
+  }
 }
 
 export default Logger;
