@@ -50,6 +50,7 @@ class RTData implements Subject {
   }
 
   private pollingData = (feedKey: string) => {
+    console.log("Polling Data")
     setInterval(async () => {
       const { data } = await axios.get(
         `https://io.adafruit.com/api/v2/meodihere/feeds/${feedKey}/data/last`,

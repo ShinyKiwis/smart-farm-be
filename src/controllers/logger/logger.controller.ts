@@ -13,15 +13,20 @@ class LoggerController implements Controller {
 
   private initializeRoute() {
     this.router.get(`${this.path}/`, this.getAllLog);
+    this.router.get(`${this.path}/daily`, this.getDailyLog);
   }
 
   private getAllLog = async (
     request: express.Request,
     response: express.Response
   ) => {
-    const all = await this.log.find();
-    response.send(all);
+    const logs = await this.log.find();
+    response.send(logs);
   };
+
+  private getDailyLog = async (request: express.Request, response: express.Response) => {
+    // const logs = await this.log.findBy
+  }
 }
 
 export default LoggerController;

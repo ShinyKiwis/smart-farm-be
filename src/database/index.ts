@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import Schedule from 'src/controllers/adafruit/schedule.interface';
+import ScheduleModel from 'src/controllers/adafruit/schedule.model';
 import ThresHold from 'src/controllers/adafruit/threshold.interface';
 import ThresHoldModel from 'src/controllers/adafruit/threshold.model';
 import User from 'src/controllers/users/user.interface';
@@ -10,6 +12,7 @@ interface Models {
   User: mongoose.Model<User & mongoose.Document>;
   Log: mongoose.Model<Log & mongoose.Document>;
   ThresHold: mongoose.Model<ThresHold & mongoose.Document>;
+  Schedule: mongoose.Model<Schedule & mongoose.Document>;
 }
 
 class Database {
@@ -28,6 +31,7 @@ class Database {
       User: UserModel,
       Log: LogModel,
       ThresHold: ThresHoldModel,
+      Schedule: ScheduleModel
     };
   }
 

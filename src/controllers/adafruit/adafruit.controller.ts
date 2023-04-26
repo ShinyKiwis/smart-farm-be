@@ -11,6 +11,7 @@ class AdafruitController implements Controller, Observer {
   public router = express.Router();
   private clients = Client.getInstance().getClients();
   private ThresHold = Database.getInstance().ThresHold;
+  private Schedule = Database.getInstance().Schedule;
   private Logger: Logger
 
   constructor(Logger: Logger) {
@@ -20,15 +21,18 @@ class AdafruitController implements Controller, Observer {
 
   update(data: any) {
     this.clients.forEach((client) => {
-      client.send(data);
+      client.send(JSON.stringify(data[0]));
     });
   }
 
   private initializeRoute() {
-    this.router.get(`${this.path}/:feedKey`, this.getFeedData);
-    this.router.post(`${this.path}/:feedKey/:data`, this.updateFeedData);
-    this.router.get(`${this.path}/:feedKey/latest`, this.getLatestData);
-    this.router.post(`${this.path}/:feedKey/:min/:max`, this.updateThresHold);
+    this.router.get(`${this.path}/threshold/`, this.getThresHold);
+    this.router.post(`${this.path}/threshold/:feedKey/:min/:max`, this.updateThresHold);
+    this.router.get(`${this.path}/feed/:feedKey`, this.getFeedData);
+    this.router.post(`${this.path}/feed/:feedKey/:data`, this.updateFeedData);
+    this.router.get(`${this.path}/feed/:feedKey/latest`, this.getLatestData);
+    this.router.post(`${this.path}/schedule/:feedKey/:timeStart/:timeEnd/:dates`, this.setSchedule);
+    this.router.get(`${this.path}/schedule/`, this.getSchedule);
   }
 
   private getFeedData = (
@@ -120,5 +124,31 @@ class AdafruitController implements Controller, Observer {
     await this.Logger.getAndUpdateThresHold()
     response.send('success');
   };
+
+  private getThresHold = async (request: express.Request, response: express.Response) => {
+    try{
+      const thresHolds = await this.ThresHold.find()
+      response.send(thresHolds)
+    }catch(err) {
+      console.log("[ERROR]: ", err)
+    }
+  }
+
+  private setSchedule = async (request: express.Request, response: express.Response) => {
+    const {feedKey, timeStart, timeEnd, dates} = request.params
+    const repeats = dates.replace('[','').replace(']','').split(',')
+    console.log(feedKey)
+    console.log(timeStart)
+    console.log(timeEnd)
+    console.log(dates[0])
+    const newSchedule = new this.Schedule({feed_key: feedKey, timeStart,timeEnd,repeats})
+    newSchedule.save()
+    response.send("success")
+  }
+
+  private getSchedule = async (request: express.Request, response: express.Response) => {
+    const schedules = await this.Schedule.find()
+    response.send(schedules)
+  }
 }
 export default AdafruitController;

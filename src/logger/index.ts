@@ -10,6 +10,7 @@ class Logger implements Observer {
   private thresholds = {}
 
   constructor() {
+    console.log("LOGGER INITIALIZING")
     this.getAndUpdateThresHold()
   }
 
