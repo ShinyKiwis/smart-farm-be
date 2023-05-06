@@ -33,6 +33,7 @@ class AdafruitController implements Controller, Observer {
     this.router.get(`${this.path}/feed/:feedKey/latest`, this.getLatestData);
     this.router.post(`${this.path}/schedule/:feedKey/:timeStart/:timeEnd/:dates`, this.setSchedule);
     this.router.get(`${this.path}/schedule/`, this.getSchedule);
+    this.router.get(`${this.path}/schedule/:feedKey`, this.getScheduleById);
   }
 
   private getFeedData = (
@@ -74,7 +75,9 @@ class AdafruitController implements Controller, Observer {
       )
       .then(() => {
         response.send('success');
-      });
+      }).catch((error) => {
+        console.log(error);
+      });;
   };
 
   private getLatestData = (
@@ -136,11 +139,22 @@ class AdafruitController implements Controller, Observer {
 
   private setSchedule = async (request: express.Request, response: express.Response) => {
     const {feedKey, timeStart, timeEnd, dates} = request.params
+    const {_id = null} = request.body
     const repeats = dates.replace('[','').replace(']','').split(',')
     console.log(feedKey)
     console.log(timeStart)
     console.log(timeEnd)
     console.log(dates[0])
+    if(_id){
+      console.log({_id})
+     const existSchedule = await this.Schedule.findOne({_id})
+     if(existSchedule){
+      existSchedule.overwrite({feed_key: feedKey,timeStart, timeEnd, repeats})
+      existSchedule.save()
+      return response.send("success")
+     }
+    }
+
     const newSchedule = new this.Schedule({feed_key: feedKey, timeStart,timeEnd,repeats})
     newSchedule.save()
     response.send("success")
@@ -149,6 +163,14 @@ class AdafruitController implements Controller, Observer {
   private getSchedule = async (request: express.Request, response: express.Response) => {
     const schedules = await this.Schedule.find()
     response.send(schedules)
+  }
+
+  private getScheduleById = async (request: express.Request, response: express.Response) => {
+    const {feedKey} = request.params
+    const schedule = await this.Schedule.find({
+      feed_key: feedKey
+    })
+    response.send(schedule)
   }
 }
 export default AdafruitController;
