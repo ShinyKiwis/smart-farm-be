@@ -11,8 +11,12 @@ class Logger implements Observer {
 
   constructor() {
     console.log("LOGGER INITIALIZING")
+    this.initializeDatabaseConnection()
     this.getAndUpdateThresHold()
   }
+  private initializeDatabaseConnection = () => {
+    Database.getInstance();
+  };
 
   public getAndUpdateThresHold = async () => {
     const thresholds = await this.threshold.find()
@@ -22,7 +26,7 @@ class Logger implements Observer {
         max: threshold.max
       }
     })
-    console.log(this.thresholds)
+    console.log("THRESHOLD: ", this.thresholds)
   };
 
   update(data: any): void {
@@ -42,7 +46,7 @@ class Logger implements Observer {
     if (isExceed) {
       type = '[WARNING]';
       this.sendLog('[WARNING]', message);
-      sendEmail(message);
+      // sendEmail(message);
     } else {
       type = '[EVENT]';
       this.sendLog('[EVENT]', message);

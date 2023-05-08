@@ -21,17 +21,24 @@ class Database {
 
   private constructor() {
     const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_ENDPOINT } = process.env;
-    mongoose.connect(
-      `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}${MONGO_ENDPOINT}`,
-      {
-        dbName: 'SmartFarm',
-      }
-    );
+    mongoose
+      .connect(
+        `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}${MONGO_ENDPOINT}`,
+        {
+          dbName: 'SmartFarm',
+        }
+      ).then(()=>{
+        console.log("Database connected!")
+      })
+    this.initializeModels()
+  }
+
+  private initializeModels =() => {
     this._models = {
       User: UserModel,
       Log: LogModel,
       ThresHold: ThresHoldModel,
-      Schedule: ScheduleModel
+      Schedule: ScheduleModel,
     };
   }
 
