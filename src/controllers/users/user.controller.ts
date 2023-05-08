@@ -17,6 +17,8 @@ class UserController implements Controller {
     this.router.get(`${this.path}/:username/:password`, this.getUser);
     this.router.get(this.path, this.getAllUsers);
     this.router.post(this.path, this.createUser);
+    this.router.post(`${this.path}/update/info`, this.updateUser);
+    this.router.post(`${this.path}/update/password`, this.updatePassword);
   }
 
   private getAllUsers = async (
@@ -64,6 +66,25 @@ class UserController implements Controller {
       response.send('User exited!');
     }
   };
+
+  private updateUser = async (request: express.Request, response: express.Response) => {
+    await this.user.updateOne({username: request.body.currentUsername}, {
+      ...request.body.data,
+    }).catch(error => {
+      response.send(JSON.stringify({error}));
+    })
+  }
+
+  private updatePassword = async (request: express.Request, response: express.Response) => {
+    const {username, password} = request.body
+    bcrypt.hash(password, 10, async (err, result) => {
+      await this.user.updateOne({username: request.body.username}, {
+        password: result,
+      }).catch(error => {
+        response.send(JSON.stringify({error}));
+      })
+    });
+  }
 }
 
 export default UserController;

@@ -25,7 +25,10 @@ class LoggerController implements Controller {
   };
 
   private getDailyLog = async (request: express.Request, response: express.Response) => {
-    // const logs = await this.log.findBy
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const logs = await this.log.find({time: {$gte: today}});
+    response.send(logs);
   }
 }
 
