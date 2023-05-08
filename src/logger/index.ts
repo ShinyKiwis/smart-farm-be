@@ -11,12 +11,8 @@ class Logger implements Observer {
 
   constructor() {
     console.log("LOGGER INITIALIZING")
-    this.initializeDatabaseConnection()
     this.getAndUpdateThresHold()
   }
-  private initializeDatabaseConnection = () => {
-    Database.getInstance();
-  };
 
   public getAndUpdateThresHold = async () => {
     const thresholds = await this.threshold.find()

@@ -17,7 +17,7 @@ class App {
     this.app = express();
     this.clients = Client.getInstance()
 
-    // this.initializeDatabaseConnection()
+    this.initializeDatabaseConnection()
     this.initializeMiddleware()
     this.initializeWebSocket()
     this.initializeControllers(controllers);
@@ -52,9 +52,9 @@ class App {
     })
   }
 
-  // private initializeDatabaseConnection = () => {
-  //   Database.getInstance();
-  // };
+  private initializeDatabaseConnection = () => {
+    Database.getInstance();
+  };
 
   private initializeControllers = (controllers: Controller[]) => {
     controllers.forEach((controller) => {
